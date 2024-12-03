@@ -29,17 +29,17 @@ def apply_step(index):
     # Propagate the input
     for i in range(rows):
         for j in range(cols):
-            processes[i][j]['a_in'] = (processes[i][j + 1]['a_out'] if j < cols - 1 else
-                                       a[i][index] if index < len(a[i]) else None)
-            processes[i][j]['b_in'] = (processes[i + 1][j]['b_out'] if i < rows - 1 else
-                                       b[index][j] if index < len(b) else None)
+            processes[i][j]['a_in'] = (processes[i][j + 1]['a_out'] if j < cols - 1
+                                       else a[i][index] if index < len(a[i]) else None)
+            processes[i][j]['b_in'] = (processes[i + 1][j]['b_out'] if i < rows - 1
+                                       else b[index][j] if index < len(b) else None)
 
     # Execute the algorithm and update the register (v) and outputs
     for i in range(rows):
         for j in range(cols):
-            processes[i][j]['v'] += processes[i][j]['a_in'] * processes[i][j]['b_in'] if processes[i][j]['a_in'] and \
-                                                                                         processes[i][j][
-                                                                                             'b_in'] else 0
+            processes[i][j]['v'] += processes[i][j]['a_in'] * processes[i][j]['b_in'] \
+                                                                if processes[i][j]['a_in'] and processes[i][j]['b_in'] \
+                                                                else 0
             processes[i][j]['a_out'] = processes[i][j]['a_in']
             processes[i][j]['b_out'] = processes[i][j]['b_in']
 
@@ -68,6 +68,15 @@ if __name__ == '__main__':
     a = add_delays(A)
     b = transpose(add_delays(transpose(B)))
 
+    print("A:")
+    for r in a:
+        print(r)
+    print("\nB:")
+    for r in b:
+        print(r)
+
+    print()
+
     # Initialize processes with dictionaries
     processes = initialise_processes()
 
@@ -82,3 +91,8 @@ if __name__ == '__main__':
             print(row)
         print("")
         progression += 1
+
+    print("Result:")
+    for row in processes:
+        row_values = [prc['v'] for prc in row]
+        print(row_values)

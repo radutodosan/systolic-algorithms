@@ -77,3 +77,7 @@ if __name__ == '__main__':
         step_index = apply_step(step_index)
         print("\nStep", progression, ":", processes)
         progression += 1
+
+    print("\nResult:")
+    for i in range(rows):
+        print(f"P{i + 1}: {processes[i]['v']}")
