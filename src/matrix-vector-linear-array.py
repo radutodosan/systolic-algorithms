@@ -70,10 +70,10 @@ if __name__ == '__main__':
     processes = initialize_processes(len(A))
 
     # Execute algorithm
-    steps = len(A[len(A) - 1]) * (len(A) - 1)
+    steps = cols + rows
     step_index = 0
     progression = 1
-    while progression < steps:
+    while progression <= steps:
         step_index = apply_step(step_index)
         print("\nStep", progression, ":", processes)
         progression += 1
