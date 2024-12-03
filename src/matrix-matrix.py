@@ -1,21 +1,3 @@
-def initialisation():
-    a_init = [
-        [1, 2, 1, 3],
-        [1, -1, 2, -2],
-        [4, 3, 2, 1]
-    ]
-    b_init = [
-        [1, 1, 1],
-        [2, 1, -1],
-        [3, 2, -1],
-        [-2, 3, 5]
-    ]
-
-    rows_init = len(a_init)
-    cols_init = len(b_init[0])
-
-    return a_init, b_init, rows_init, cols_init
-
 def initialise_processes():
     return [[{
         'v': 0,
@@ -25,7 +7,7 @@ def initialise_processes():
         'b_out': None
     }
         for _ in range(cols)]
-    for _ in range(rows)]
+        for _ in range(rows)]
 
 
 def transpose(matrix):
@@ -43,31 +25,44 @@ def add_delays(matrix):
     return matrix
 
 
-def step(index, prces):
-    """Perform one step of computation."""
-
+def apply_step(index):
     # Propagate the input
     for i in range(rows):
         for j in range(cols):
-            prces[i][j]['a_in'] = (prces[i][j + 1]['a_out'] if j < cols - 1 else
-                                  a[i][index] if index < len(a[i]) else 0)
-            prces[i][j]['b_in'] = (prces[i + 1][j]['b_out'] if i < rows - 1 else
-                                  b[index][j] if index < len(b) else 0)
+            processes[i][j]['a_in'] = (processes[i][j + 1]['a_out'] if j < cols - 1 else
+                                       a[i][index] if index < len(a[i]) else None)
+            processes[i][j]['b_in'] = (processes[i + 1][j]['b_out'] if i < rows - 1 else
+                                       b[index][j] if index < len(b) else None)
 
     # Execute the algorithm and update the register (v) and outputs
     for i in range(rows):
         for j in range(cols):
-            prces[i][j]['v'] += prces[i][j]['a_in'] * prces[i][j]['b_in'] if prces[i][j]['a_in'] and prces[i][j]['b_in'] else 0
-            prces[i][j]['a_out'] = prces[i][j]['a_in'] if prces[i][j]['a_in'] else 0
-            prces[i][j]['b_out'] = prces[i][j]['b_in'] if prces[i][j]['b_in'] else 0
+            processes[i][j]['v'] += processes[i][j]['a_in'] * processes[i][j]['b_in'] if processes[i][j]['a_in'] and \
+                                                                                         processes[i][j][
+                                                                                             'b_in'] else 0
+            processes[i][j]['a_out'] = processes[i][j]['a_in']
+            processes[i][j]['b_out'] = processes[i][j]['b_in']
 
     index += 1
 
-    return index, prces
+    return index
 
 
 if __name__ == '__main__':
-    A, B, rows, cols = initialisation()
+    A = [
+        [1, 2, 1, 3],
+        [1, -1, 2, -2],
+        [4, 3, 2, 1]
+    ]
+    B = [
+        [1, 1, 1],
+        [2, 1, -1],
+        [3, 2, -1],
+        [-2, 3, 5]
+    ]
+
+    rows = len(A)
+    cols = len(B[0])
 
     # Apply delays and transpose as needed
     a = add_delays(A)
@@ -76,12 +71,12 @@ if __name__ == '__main__':
     # Initialize processes with dictionaries
     processes = initialise_processes()
 
-    input_index = 0
-
+    # Execute algorithm
     steps = rows * cols
+    step_index = 0
     progression = 1
     while progression <= steps:
-        input_index, processes = step(input_index, processes)
+        step_index = apply_step(step_index)
         print("Step:", progression)
         for row in processes:
             print(row)
