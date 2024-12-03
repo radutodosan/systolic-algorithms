@@ -48,7 +48,7 @@ def initialize_processes(matrix_length):
 
 def step(index, prces, matrix):
 
-    # propagate the input
+    # propagate the inputs
     for i in range(len(prces)):
         prces[i]['a_in'] = matrix[i][index] if index < len(matrix[i]) else 0
         prces[i]['u_in'] = prces[i + 1]['u_out'] if i < len(prces) - 1 else (u[index] if index < len(u) else 0)
