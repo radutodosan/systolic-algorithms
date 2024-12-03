@@ -18,11 +18,11 @@ def initialisation():
 
 def initialise_processes():
     return [[{
-        'c': 0,
-        'ain': None,
-        'aout': None,
-        'bin': None,
-        'bout': None
+        'v': 0,
+        'a_in': None,
+        'a_out': None,
+        'b_in': None,
+        'b_out': None
     }
         for _ in range(cols)]
     for _ in range(rows)]
@@ -49,17 +49,17 @@ def step(index, prces):
     # Propagate the input
     for i in range(rows):
         for j in range(cols):
-            prces[i][j]['ain'] = (prces[i][j + 1]['aout'] if j < cols - 1 else
+            prces[i][j]['a_in'] = (prces[i][j + 1]['a_out'] if j < cols - 1 else
                                   a[i][index] if index < len(a[i]) else 0)
-            prces[i][j]['bin'] = (prces[i + 1][j]['bout'] if i < rows - 1 else
+            prces[i][j]['b_in'] = (prces[i + 1][j]['b_out'] if i < rows - 1 else
                                   b[index][j] if index < len(b) else 0)
 
-    # Execute the algorithm and update the register (c) and outputs
+    # Execute the algorithm and update the register (v) and outputs
     for i in range(rows):
         for j in range(cols):
-            prces[i][j]['c'] += prces[i][j]['ain'] * prces[i][j]['bin'] if prces[i][j]['ain'] and prces[i][j]['bin'] else 0
-            prces[i][j]['aout'] = prces[i][j]['ain'] if prces[i][j]['ain'] else 0
-            prces[i][j]['bout'] = prces[i][j]['bin'] if prces[i][j]['bin'] else 0
+            prces[i][j]['v'] += prces[i][j]['a_in'] * prces[i][j]['b_in'] if prces[i][j]['a_in'] and prces[i][j]['b_in'] else 0
+            prces[i][j]['a_out'] = prces[i][j]['a_in'] if prces[i][j]['a_in'] else 0
+            prces[i][j]['b_out'] = prces[i][j]['b_in'] if prces[i][j]['b_in'] else 0
 
     index += 1
 
@@ -82,6 +82,7 @@ if __name__ == '__main__':
     progression = 1
     while progression < steps:
         input_index, processes = step(input_index, processes)
+        print("Step:", progression)
         for row in processes:
             print(row)
         print("")
